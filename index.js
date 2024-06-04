@@ -1,7 +1,7 @@
 const express = require("express");
 const app = express();
 
-const persons = [
+let persons = [
   {
     id: 1,
     name: "Arto Hellas",
@@ -47,6 +47,20 @@ app.get("/api/persons/:id", (req, res) => {
     // res.status(404).end();
   } else {
     res.json(person);
+  }
+});
+
+app.delete("/api/persons/:id", (req, res) => {
+  const id = +req.params.id;
+
+  const oldLength = persons.length;
+  persons = persons.filter((p) => p.id !== id);
+
+  if (oldLength === persons.length) {
+    res.status(404).json({ error: "not found" });
+  } else {
+    console.log(`Removed person with id=${id}`);
+    res.status(204).end();
   }
 });
 
