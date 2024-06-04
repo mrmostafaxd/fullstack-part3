@@ -24,6 +24,15 @@ const persons = [
   },
 ];
 
+app.get("/info", (req, res) => {
+  const phoneInfo = `Phonebook has info for ${persons.length} people`;
+
+  const date = new Date();
+  const timeInfo = `${date.toDateString()} ${date.toTimeString()}`;
+
+  res.send(`<p>${phoneInfo}</p> <p>${timeInfo}</p>`);
+});
+
 app.get("/api/persons", (req, res) => {
   console.log(`GET request sent to retrieve all persons`);
   res.json(persons);
