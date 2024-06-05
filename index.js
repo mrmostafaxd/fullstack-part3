@@ -1,7 +1,10 @@
 const express = require("express");
+const morgan = require("morgan");
 
 const app = express();
+
 app.use(express.json());
+app.use(morgan("tiny"));
 
 let persons = [
   {
@@ -36,7 +39,6 @@ app.get("/info", (req, res) => {
 });
 
 app.get("/api/persons", (req, res) => {
-  console.log(`GET request sent to retrieve all persons`);
   res.json(persons);
 });
 
@@ -61,7 +63,6 @@ app.delete("/api/persons/:id", (req, res) => {
   if (oldLength === persons.length) {
     res.status(404).json({ error: "not found" });
   } else {
-    console.log(`Removed person with id=${id}`);
     res.status(204).end();
   }
 });
@@ -88,12 +89,10 @@ app.post("/api/persons", (req, res) => {
   const { name, number } = req.body;
 
   if (name === undefined) {
-    console.error(`cannot add person: name missing`);
     return res.status(400).json({ error: "name missing" });
   }
 
   if (number === undefined) {
-    console.error(`cannot add person: number missing`);
     return res.status(400).json({ error: "number missing" });
   }
 
@@ -101,9 +100,6 @@ app.post("/api/persons", (req, res) => {
     (p) => p.name.trim().toLowerCase() === name.trim().toLowerCase(),
   );
   if (personExists !== undefined) {
-    console.error(
-      `cannot add person: person with the same name already exists`,
-    );
     // from https://stackoverflow.com/questions/3290182/which-status-code-should-i-use-for-failed-validations-or-invalid-duplicates
     return res.status(409).json({ error: "person already exists" });
   }
@@ -115,12 +111,9 @@ app.post("/api/persons", (req, res) => {
   };
 
   persons = persons.concat(newPerson);
-  console.log(`"${name}" added to the persons database`);
 
   res.status(201).json(newPerson);
 });
 
 const PORT = 3001;
-app.listen(PORT, () => {
-  console.log(`Server running on port ${PORT}`);
-});
+app.listen(PORT, () => {});
